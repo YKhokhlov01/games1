@@ -16,9 +16,15 @@ export const Game = () => {
   const [history, setHistory] = useState([{ box }]);
   const [xIsNext, setxIsNext] = useState(true);
   const [stepNumber, setStepNumber] = useState(0);
+  const[num, setNum] = useState([0])
   const current = history[stepNumber];
-
+ 
   function handleClick(idx) {
+    // Отобразите позицию для каждого хода в формате (колонка, строка) в списке истории ходов.
+    let n = num;
+    n=n.concat(idx+1)    
+    setNum(n);
+    // Основная часть
     let box = squares;
     let number = stepNumber;
     const hist = history.slice(0, number + 1);
@@ -29,43 +35,41 @@ export const Game = () => {
     }
     squ[idx] = xIsNext ? "X" : "O";
     box = squ;
+
+    // Обновление useState 
     setSquares(box);
     setHistory(
       hist.concat([
         {
           box,
         },
-      ])
-    );
+      ]) 
+    );       
     setxIsNext(!xIsNext);
     number = hist.length;
     setStepNumber(number);
-    console.log(squ);
-    console.log(history);
-    console.log(current);
-    console.log(stepNumber);
-  }
-
+    };
+// Функция прыжка по истории
   function jumpTo(i) {
     let xisN = xIsNext;
     let number = stepNumber;
     number = i;
     xisN = i % 2 === 0;
     setStepNumber(number);
-    setxIsNext(xisN);
-    console.log(number);
-    console.log(xisN);
-  }
-
+    setxIsNext(xisN);      
+     }
+    //  Вывод Истории игры
   const moves = history.map((step, move) => {
-    const desc = move ? "Перейти к ходу #" + move : "К началу игры";
+    const turn = grid[num[move]]
+    console.log(step)
+    const desc = move ? "Перейти к ходу #" + move + " Позиция по горизонтали: " + turn.x + ";  Позиция по вертикали: " + turn.y : "К началу игры";
     return (
       <li key={move}>
-        <button onClick={() => jumpTo(move)}>{desc}</button>
+        <button onClick={() => jumpTo(move)}>{desc} </button>
       </li>
     );
   });
-
+// Определение победителя
   const winner = calculateWinner(current.box);
   let status;
   if (winner) {
@@ -73,7 +77,7 @@ export const Game = () => {
   } else {
     status = "Следующий ход: " + (xIsNext ? "X" : "O");
   }
-
+  
   return (
     <div className="game">
       <div className="game-board">
@@ -86,6 +90,19 @@ export const Game = () => {
     </div>
   );
 };
+
+const grid = [
+  {x:0, y:0},
+  {x:1, y:1},
+  {x:1, y:2},
+  {x:1, y:3},
+  {x:2, y:1},
+  {x:2, y:2},
+  {x:2, y:3},
+  {x:3, y:1},
+  {x:3, y:2},
+  {x:3, y:3},];
+
 function calculateWinner(squares) {
   const lines = [
     [0, 1, 2],
