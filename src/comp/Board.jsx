@@ -1,3 +1,4 @@
+
 import { Square } from "./Square";
 
 export const Board = (props) => {
@@ -7,23 +8,23 @@ export const Board = (props) => {
     );
   }
 
+ 
+  const butNumber = [[0,1,2],[3,4,5],[6,7,8]];
+  const render = butNumber.map((squareRender) => { 
+    console.log  (squareRender)   
+  
+    return (      
+        <div className="board-row" key={squareRender}>
+        {renderSquare(squareRender[0])}
+        {renderSquare(squareRender[1])}
+        {renderSquare(squareRender[2])}
+      </div>    
+    );
+  });
+
   return (
-    <div>
-      <div className="board-row">
-        {renderSquare(0)}
-        {renderSquare(1)}
-        {renderSquare(2)}
-      </div>
-      <div className="board-row">
-        {renderSquare(3)}
-        {renderSquare(4)}
-        {renderSquare(5)}
-      </div>
-      <div className="board-row">
-        {renderSquare(6)}
-        {renderSquare(7)}
-        {renderSquare(8)}
-      </div>
+    <div>    
+      {render}
     </div>
   );
 };

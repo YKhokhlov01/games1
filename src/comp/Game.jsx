@@ -67,8 +67,7 @@ export const Game = () => {
     //  Вывод Истории игры
   const moves = history.map((step, move) => {
     const turn = grid[num[move]]
-    console.log('squares',squares)
-    console.log('change',stepChange)
+    
    
 
     
