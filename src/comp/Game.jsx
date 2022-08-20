@@ -16,6 +16,7 @@ export const Game = () => {
   const [history, setHistory] = useState([{ box }]);
   const [xIsNext, setxIsNext] = useState(true);
   const [stepNumber, setStepNumber] = useState(0);
+  const [stepChange, setStepChange] = useState([0]);
   const[num, setNum] = useState([0])
   const current = history[stepNumber];
  
@@ -35,7 +36,12 @@ export const Game = () => {
     }
     squ[idx] = xIsNext ? "X" : "O";
     box = squ;
-
+    // Блок вывода хода(Х/0)
+    let change = stepChange;
+    change = squ[idx]
+    setStepChange (
+      stepChange.concat(change)
+    )
     // Обновление useState 
     setSquares(box);
     setHistory(
@@ -61,8 +67,12 @@ export const Game = () => {
     //  Вывод Истории игры
   const moves = history.map((step, move) => {
     const turn = grid[num[move]]
-    console.log(step)
-    const desc = move ? "Перейти к ходу #" + move + " Позиция по горизонтали: " + turn.x + ";  Позиция по вертикали: " + turn.y : "К началу игры";
+    console.log('squares',squares)
+    console.log('change',stepChange)
+   
+
+    
+    const desc = move ? "Перейти к ходу #" + move + " Позиция по горизонтали: " + turn.x + ";  Позиция по вертикали: " + turn.y + ";  выбор:" + stepChange[move]  : "К началу игры" ;
     return (
       <li key={move}>
         <button onClick={() => jumpTo(move)}>{desc} </button>
