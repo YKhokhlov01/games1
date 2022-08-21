@@ -17,7 +17,8 @@ export const Game = () => {
   const [xIsNext, setxIsNext] = useState(true);
   const [stepNumber, setStepNumber] = useState(0);
   const [stepChange, setStepChange] = useState([0]);
-  const[num, setNum] = useState([0])
+    const[num, setNum] = useState([0])
+    const [sort, setSort] = useState(true);   
   const current = history[stepNumber];
  
   function handleClick(idx) {
@@ -41,8 +42,8 @@ export const Game = () => {
     change = squ[idx]
     setStepChange (
       stepChange.concat(change)
-    )
-    // Обновление useState 
+    );
+       // Обновление useState 
     setSquares(box);
     setHistory(
       hist.concat([
@@ -50,7 +51,7 @@ export const Game = () => {
           box,
         },
       ]) 
-    );       
+    );            
     setxIsNext(!xIsNext);
     number = hist.length;
     setStepNumber(number);
@@ -64,20 +65,48 @@ export const Game = () => {
     setStepNumber(number);
     setxIsNext(xisN);      
      }
-    //  Вывод Истории игры
-  const moves = history.map((step, move) => {
-    const turn = grid[num[move]]
-    
+    //  Вывод Истории игры   
    
-
-    
+ /* const moves = history.map((step, move) => {
+    const turn = grid[num[move]]     
     const desc = move ? "Перейти к ходу #" + move + " Позиция по горизонтали: " + turn.x + ";  Позиция по вертикали: " + turn.y + ";  выбор:" + stepChange[move]  : "К началу игры" ;
+ 
     return (
       <li key={move}>
         <button onClick={() => jumpTo(move)}>{desc} </button>
       </li>
     );
+  });*/
+
+  // Сортировка
+  function btnSort() {
+    let newSort = sort
+    newSort=!newSort
+    setSort(newSort)    
+}
+let moves;
+if(sort) {
+  moves = history.map((step, move) => {
+    const turn = grid[num[move]]     
+    const desc = move ? "Перейти к ходу #" + move + " Позиция по горизонтали: " + turn.x + ";  Позиция по вертикали: " + turn.y + ";  выбор:" + stepChange[move]  : "К началу игры" ;
+     return (
+      <li key={move}>
+        <button onClick={() => jumpTo(move)}>{desc} </button>
+      </li>
+    );
   });
+} else {
+   moves =history.map((step, move) => {
+    const turn = grid[num[move]]     
+    const desc = move ? "Перейти к ходу #" + move + " Позиция по горизонтали: " + turn.x + ";  Позиция по вертикали: " + turn.y + ";  выбор:" + stepChange[move]  : "К началу игры" ;
+     return (
+      <li key={move}>
+        <button onClick={() => jumpTo(move)}>{desc} </button>
+      </li>
+    );
+  }).reverse();
+}
+
 // Определение победителя
   const winner = calculateWinner(current.box);
   let status;
@@ -93,9 +122,12 @@ export const Game = () => {
         <Board squares={current.box} onClick={(idx) => handleClick(idx)} />
       </div>
       <div className="game-info">
-        <div>{status}</div>
+        <div>{status}</div>       
         <ol>{moves}</ol>
       </div>
+      <div>
+      <button onClick={() => btnSort()} >Сортировка</button>  
+        </div>
     </div>
   );
 };
