@@ -71,11 +71,11 @@ ol, ul {
 
 .game {
   display: flex;
-  flex-direction: row;
+flex-direction: column;
 }
 
 .game-info {
-  margin-left: 20px;
+  margin-top: 20px;
 }
 
 .btnSort {
@@ -103,7 +103,7 @@ ol, ul {
 }
 
 .status {
-  margin-left: 20px;
+  margin-left: 10px;
   border: 2px solid gold;
   border-radius: 6px;
   padding: 4px;
