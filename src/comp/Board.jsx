@@ -1,17 +1,16 @@
-
 import { Square } from "./Square";
-
-export const Board = (props) => {
-  function renderSquare(idx) {
+export const Board = ({squares,onClick,activeButton,win}) => {
+  
+  function renderSquare(idx) {  
+   const className = activeButton ===  idx ? 'square active' : 'square';
+     
     return (
-      <Square value={props.squares[idx]} onClick={() => props.onClick(idx)} />
+      <Square idx= {idx} win={win} className={className}  value={squares[idx]} onClick={() => {onClick(idx)}} />
     );
   }
 
- 
   const butNumber = [[0,1,2],[3,4,5],[6,7,8]];
-  const render = butNumber.map((squareRender) => { 
-  
+  const render = butNumber.map((squareRender) => {   
   
     return (      
         <div className="board-row" key={squareRender}>

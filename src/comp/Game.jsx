@@ -1,4 +1,5 @@
 import { Board } from "./Board";
+import { ButtonSort } from "./ButtonSort";
 import React, { useState } from "react";
 export const Game = () => {
   const [squares, setSquares] = useState([
@@ -17,14 +18,15 @@ export const Game = () => {
   const [xIsNext, setxIsNext] = useState(true);
   const [stepNumber, setStepNumber] = useState(0);
   const [stepChange, setStepChange] = useState([0]);
-    const[num, setNum] = useState([0])
-    const [sort, setSort] = useState(true);   
+  const [num, setNum] = useState([0]);
   const current = history[stepNumber];
- 
+  const [sort, setSort] = useState(true);
+  // Выделение желтым последнего хода/ исторического хода
+  const [activeButton, setActiveButton] = useState(10)
   function handleClick(idx) {
     // Отобразите позицию для каждого хода в формате (колонка, строка) в списке истории ходов.
     let n = num;
-    n=n.concat(idx+1)    
+    n = n.concat(idx + 1);
     setNum(n);
     // Основная часть
     let box = squares;
@@ -32,117 +34,112 @@ export const Game = () => {
     const hist = history.slice(0, number + 1);
     const current = history[history.length - 1];
     let squ = current.box.slice();
-    if (calculateWinner(current.box) || squ[idx]) {
+    if (winner || squ[idx]) {
       return;
     }
+    setActiveButton(idx) // Выделение желтым последнего хода/ исторического хода
     squ[idx] = xIsNext ? "X" : "O";
     box = squ;
     // Блок вывода хода(Х/0)
     let change = stepChange;
-    change = squ[idx]
-    setStepChange (
-      stepChange.concat(change)
-    );
-       // Обновление useState 
+    change = squ[idx];
+    setStepChange(stepChange.concat(change));
+    // Обновление useState
     setSquares(box);
     setHistory(
       hist.concat([
         {
           box,
         },
-      ]) 
-    );            
+      ])
+    );
     setxIsNext(!xIsNext);
     number = hist.length;
     setStepNumber(number);
-    };
-// Функция прыжка по истории
+  }
+  // Функция прыжка по истории
   function jumpTo(i) {
     let xisN = xIsNext;
-    let number = stepNumber;
-    number = i;
+    let number = stepNumber;    
+    number = i;    
     xisN = i % 2 === 0;
     setStepNumber(number);
-    setxIsNext(xisN);      
-     }
-    //  Вывод Истории игры   
-   
- /* const moves = history.map((step, move) => {
-    const turn = grid[num[move]]     
-    const desc = move ? "Перейти к ходу #" + move + " Позиция по горизонтали: " + turn.x + ";  Позиция по вертикали: " + turn.y + ";  выбор:" + stepChange[move]  : "К началу игры" ;
- 
-    return (
-      <li key={move}>
-        <button onClick={() => jumpTo(move)}>{desc} </button>
-      </li>
-    );
-  });*/
+    setxIsNext(xisN); 
+  }
+  //Вывод
 
-  // Сортировка
-  function btnSort() {
-    let newSort = sort
-    newSort=!newSort
-    setSort(newSort)    
-}
-let moves;
-if(sort) {
-  moves = history.map((step, move) => {
-    const turn = grid[num[move]]     
-    const desc = move ? "Перейти к ходу #" + move + " Позиция по горизонтали: " + turn.x + ";  Позиция по вертикали: " + turn.y + ";  выбор:" + stepChange[move]  : "К началу игры" ;
-     return (
-      <li key={move}>
-        <button onClick={() => jumpTo(move)}>{desc} </button>
-      </li>
-    );
-  });
-} else {
-   moves =history.map((step, move) => {
-    const turn = grid[num[move]]     
-    const desc = move ? "Перейти к ходу #" + move + " Позиция по горизонтали: " + turn.x + ";  Позиция по вертикали: " + turn.y + ";  выбор:" + stepChange[move]  : "К началу игры" ;
-     return (
-      <li key={move}>
-        <button onClick={() => jumpTo(move)}>{desc} </button>
-      </li>
-    );
-  }).reverse();
-}
-
-// Определение победителя
-  const winner = calculateWinner(current.box);
+  let moves;
+  if (sort) {
+    moves = history.map((step, move) => {
+      const turn = grid[num[move]];
+      console.log('nn',num)
+      const desc = move
+        ? "Перейти к ходу #" +
+          move +
+          " Позиция по горизонтали: " +
+          turn.x +
+          ";  Позиция по вертикали: " +
+          turn.y +
+          ";  выбор:" +
+          stepChange[move]
+        : "К началу игры";
+      return (
+        <li key={move}>
+          <button onClick={() => {jumpTo(move);setActiveButton(num[move]-1)}}>{desc} </button>
+        </li>
+      );
+    });
+  } else {
+    moves = history
+      .map((step, move) => {
+        const turn = grid[num[move]];
+        const desc = move
+          ? "Перейти к ходу #" +
+            move +
+            " Позиция по горизонтали: " +
+            turn.x +
+            ";  Позиция по вертикали: " +
+            turn.y +
+            ";  выбор:" +
+            stepChange[move]
+          : "К началу игры";
+        return (
+          <li key={move}>
+            <button onClick={() => {jumpTo(move);setActiveButton(num[move]-1)}}>{desc} </button>
+          </li>
+        );
+      })
+      .reverse();
+  }
+  // Определение победителя
+  const winMass = calculateWinner(current.box) 
+  const win =winMass[1]
+ //console.log(win)
+ const winner = winMass[0]
   let status;
   if (winner) {
     status = "Выиграл " + winner;
   } else {
     status = "Следующий ход: " + (xIsNext ? "X" : "O");
   }
-  
+  console.log(winner)
   return (
     <div className="game">
       <div className="game-board">
-        <Board squares={current.box} onClick={(idx) => handleClick(idx)} />
+        <Board squares={current.box} win={win} activeButton={activeButton} onClick={(idx) => handleClick(idx)} />
       </div>
       <div className="game-info">
-        <div>{status}</div>       
+        <div>
+          <h3>{status}</h3>
+          <h3>           
+            <ButtonSort onClickSort={() => setSort(!sort)} />
+          </h3>
+        </div>
         <ol>{moves}</ol>
       </div>
-      <div>
-      <button onClick={() => btnSort()} >Сортировка</button>  
-        </div>
     </div>
   );
 };
-
-const grid = [
-  {x:0, y:0},
-  {x:1, y:1},
-  {x:1, y:2},
-  {x:1, y:3},
-  {x:2, y:1},
-  {x:2, y:2},
-  {x:2, y:3},
-  {x:3, y:1},
-  {x:3, y:2},
-  {x:3, y:3},];
 
 function calculateWinner(squares) {
   const lines = [
@@ -158,8 +155,20 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return [squares[a],[a,b,c]]
     }
   }
-  return null;
+  return [null,[null,null,null]];
 }
+const grid = [
+  { x: 0, y: 0 },
+  { x: 1, y: 1 },
+  { x: 1, y: 2 },
+  { x: 1, y: 3 },
+  { x: 2, y: 1 },
+  { x: 2, y: 2 },
+  { x: 2, y: 3 },
+  { x: 3, y: 1 },
+  { x: 3, y: 2 },
+  { x: 3, y: 3 },
+];

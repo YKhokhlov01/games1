@@ -1,12 +1,20 @@
-export const Square = (props) => {
+
+export const Square = ({idx, value, onClick, className, win}) => {
+ 
+ const win2 = win.includes(idx, 0) // Определение какие кнопки нужно подсветить при победе
+
+ const className1 = win2  ? 'square win' : ''
+ const className2 = `${className} ${className1}`
+ console.log(className1)
   return (
     <button
-      className="square"
-      onClick={() => {
-        props.onClick();
-      }}
+      className= {` ${className2} `}  
+      onClick={
+        () => {      
+      onClick();}
+      }
     >
-      {props.value}
+      {value}
     </button>
   );
 };
