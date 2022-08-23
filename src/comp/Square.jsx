@@ -5,7 +5,6 @@ export const Square = ({idx, value, onClick, className, win}) => {
 
  const className1 = win2  ? 'square win' : ''
  const className2 = `${className} ${className1}`
- console.log(className1)
   return (
     <button
       className= {` ${className2} `}  

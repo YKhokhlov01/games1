@@ -77,3 +77,36 @@ ol, ul {
 .game-info {
   margin-left: 20px;
 }
+
+.btnSort {
+  background: lightgreen;
+  border: 2px solid gold;
+  border-radius: 12px;
+  height: 30px;
+  margin-right: -1px;
+  margin-top: -10px;
+  margin-left: 20px;
+  padding: 0;
+  text-align: center;
+  width: 100px;
+}
+
+.btnStep {
+  background: lavender;
+  border: 1px solid blueviolet;
+  border-radius: 6px;
+  height: 30px; 
+  margin-top:  5px;  
+  padding: 0;
+  text-align: center; 
+  padding: 4px; 
+}
+
+.status {
+  margin-left: 20px;
+  border: 2px solid gold;
+  border-radius: 6px;
+  padding: 4px;
+  width: 210px;
+  text-align: center; 
+}

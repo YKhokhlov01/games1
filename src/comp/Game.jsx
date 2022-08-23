@@ -1,8 +1,9 @@
 import { Board } from "./Board";
 import { ButtonSort } from "./ButtonSort";
+import { Winner } from "./Winner";
 import React, { useState } from "react";
 export const Game = () => {
-  const [squares, setSquares] = useState([
+  let [squares, setSquares] = useState([
     null,
     null,
     null,
@@ -12,67 +13,58 @@ export const Game = () => {
     null,
     null,
     null,
-  ]);
-  let box = squares;
-  const [history, setHistory] = useState([{ box }]);
-  const [xIsNext, setxIsNext] = useState(true);
-  const [stepNumber, setStepNumber] = useState(0);
-  const [stepChange, setStepChange] = useState([0]);
-  const [num, setNum] = useState([0]);
+  ]); // Основной массив значений кнопок
+  const [history, setHistory] = useState([{ squares }]); // Массив Истории
+  let [xIsNext, setxIsNext] = useState(true); //boolean для определения X/O
+  let [stepNumber, setStepNumber] = useState(0); //Номер Хода
+  let [stepChange, setStepChange] = useState([0]); // Массив Ходов в виде Х/О  для вывода в кнопках-шагах
+  let [num, setNum] = useState([0]); // Массив ходов в виде idx-1 кнопки
   const current = history[stepNumber];
-  const [sort, setSort] = useState(true);
+  const [sort, setSort] = useState(true);  //Переключатель Сортировки 
   // Выделение желтым последнего хода/ исторического хода
-  const [activeButton, setActiveButton] = useState(10)
+  const [activeButton, setActiveButton] = useState(10) //Активная кнопка в виде массива
+  //Функция нажатия игровой кнопки
   function handleClick(idx) {
     // Отобразите позицию для каждого хода в формате (колонка, строка) в списке истории ходов.
-    let n = num;
-    n = n.concat(idx + 1);
-    setNum(n);
+    num = num.concat(idx + 1);
+    setNum(num);
     // Основная часть
-    let box = squares;
-    let number = stepNumber;
-    const hist = history.slice(0, number + 1);
+    const hist = history.slice(0, stepNumber + 1);
     const current = history[history.length - 1];
-    let squ = current.box.slice();
+    let squ = current.squares.slice();
     if (winner || squ[idx]) {
       return;
     }
     setActiveButton(idx) // Выделение желтым последнего хода/ исторического хода
     squ[idx] = xIsNext ? "X" : "O";
-    box = squ;
+    squares = squ;
     // Блок вывода хода(Х/0)
-    let change = stepChange;
-    change = squ[idx];
-    setStepChange(stepChange.concat(change));
+    setStepChange(stepChange.concat(squ[idx]));
     // Обновление useState
-    setSquares(box);
+    setSquares(squares);
     setHistory(
       hist.concat([
         {
-          box,
+          squares,
         },
       ])
     );
     setxIsNext(!xIsNext);
-    number = hist.length;
-    setStepNumber(number);
+    stepNumber = hist.length;
+    setStepNumber(stepNumber);
   }
   // Функция прыжка по истории
-  function jumpTo(i) {
-    let xisN = xIsNext;
-    let number = stepNumber;    
-    number = i;    
-    xisN = i % 2 === 0;
-    setStepNumber(number);
-    setxIsNext(xisN); 
+  function jumpTo(i) {       
+    stepNumber = i;    
+    xIsNext = i % 2 === 0;
+    setStepNumber(stepNumber);
+    setxIsNext(xIsNext); 
   }
   //Вывод
-
   let moves;
   if (sort) {
     moves = history.map((step, move) => {
       const turn = grid[num[move]];
-      console.log('nn',num)
       const desc = move
         ? "Перейти к ходу #" +
           move +
@@ -85,7 +77,7 @@ export const Game = () => {
         : "К началу игры";
       return (
         <li key={move}>
-          <button onClick={() => {jumpTo(move);setActiveButton(num[move]-1)}}>{desc} </button>
+          <button className="btnStep" onClick={() => {jumpTo(move);setActiveButton(num[move]-1)}}>{desc} </button>
         </li>
       );
     });
@@ -105,32 +97,27 @@ export const Game = () => {
           : "К началу игры";
         return (
           <li key={move}>
-            <button onClick={() => {jumpTo(move);setActiveButton(num[move]-1)}}>{desc} </button>
+            <button className="btnStep" onClick={() => {jumpTo(move);setActiveButton(num[move]-1)}}>{desc} </button>
           </li>
         );
       })
       .reverse();
   }
-  // Определение победителя
-  const winMass = calculateWinner(current.box) 
-  const win =winMass[1]
- //console.log(win)
- const winner = winMass[0]
-  let status;
-  if (winner) {
-    status = "Выиграл " + winner;
-  } else {
-    status = "Следующий ход: " + (xIsNext ? "X" : "O");
-  }
-  console.log(winner)
+  // Определение победителя компонент Winner -поднятие состояния
+  const winMass = calculateWinner(current.squares) 
+    const win =winMass[1]
+    const winner = winMass[0]
+ // 
   return (
     <div className="game">
       <div className="game-board">
-        <Board squares={current.box} win={win} activeButton={activeButton} onClick={(idx) => handleClick(idx)} />
+        <Board squares={current.squares} win={win} activeButton={activeButton} onClick={(idx) => handleClick(idx)} />
       </div>
       <div className="game-info">
         <div>
-          <h3>{status}</h3>
+          <div className="status">         
+          <Winner squares={squares} winner={winner} xIsNext={xIsNext} />
+          </div>
           <h3>           
             <ButtonSort onClickSort={() => setSort(!sort)} />
           </h3>
@@ -140,7 +127,6 @@ export const Game = () => {
     </div>
   );
 };
-
 function calculateWinner(squares) {
   const lines = [
     [0, 1, 2],
@@ -160,6 +146,7 @@ function calculateWinner(squares) {
   }
   return [null,[null,null,null]];
 }
+
 const grid = [
   { x: 0, y: 0 },
   { x: 1, y: 1 },
